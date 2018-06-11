@@ -3,20 +3,20 @@ package br.com.model;
 import br.com.controller.DB;
 
 public class Documento extends DB {
-	
-	String numero;
+
+	int numero;
 	double total;
 	boolean confirmado;
-	
+
 	public Documento() {
-		
+
 	}
-	
-	public String getNumero() {
+
+	public int getNumero() {
 		return numero;
 	}
 
-	public void setNumero(String numero) {
+	public void setNumero(int numero) {
 		this.numero = numero;
 	}
 
@@ -34,8 +34,6 @@ public class Documento extends DB {
 
 	public void setConfirmado(boolean confirmado) {
 		this.confirmado = confirmado;
-	}	
+	}
 
 }
-
-

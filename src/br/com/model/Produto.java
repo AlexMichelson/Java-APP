@@ -4,26 +4,24 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 public class Produto {
-	
+
+	int idItem;
 	String codigo;
 	String descricao;
-	Double preco;
-	
-	public	Produto() {
-		
-	}
-	
-	public	Produto(String codigo, String descricao, Double preco ) {
-		this.codigo    = codigo;
-		this.descricao = descricao;
-		this.preco     = preco;
-	}
-	
+	double preco;
 
-	
+	public Produto() {
+
+	}
+
+	public Produto(String codigo, String descricao, Double preco) {
+		this.codigo = codigo;
+		this.descricao = descricao;
+		this.preco = preco;
+	}
+
 	public String getCodigo() {
 		return codigo;
 	}
@@ -40,23 +38,31 @@ public class Produto {
 		this.descricao = descricao;
 	}
 
-	public Double getPreco() {
+	public double getPreco() {
 		return preco;
 	}
-
-	public void setPreco(Double preco) {
+	
+	public void setPreco(double preco) {
 		this.preco = preco;
 	}
 	
-	public void Add (Statement st) {
+	public int getIdItem() {
+		return idItem;
+	}
+
+	public void setIdItem(int idItem) {
+		this.idItem = idItem;
+	}
+	
+	public void Add(Statement st) {
 		try {
-			st.execute("Insert Into public.\"Produto\" (\"Codigo\", \"Descricao\", \"Preco\") Values('"+getCodigo()+"','"+getDescricao()+"','"+getPreco()+"')");
+			st.execute("Insert Into public.\"Produto\" (\"Codigo\", \"Descricao\", \"Preco\") Values('" + getCodigo()
+					+ "','" + getDescricao() + "','" + getPreco() + "')");
 			JOptionPane.showMessageDialog(null, "Produto cadastrado!");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
 	}
-
 
 }

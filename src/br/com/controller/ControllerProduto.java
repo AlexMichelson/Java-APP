@@ -11,23 +11,31 @@ import javax.swing.JOptionPane;
 
 import br.com.model.Produto;
 
-public class ControllerProduto {
+public class ControllerProduto extends Produto {
 
 	private DB db = new DB();
 	private Statement st;
 
-	public void addProd(Produto prod) {
+	public ControllerProduto() {
 
-		if (prod.getCodigo() != null) {
+	}
+
+	public ControllerProduto(String codigo, String descricao, Double preco) {
+		super(codigo, descricao, preco);
+	}
+
+	public void addProd() {
+
+		if (getCodigo() != null) {
 
 			try {
 				st = db.getCon().createStatement();
-				st.executeQuery("Select count(*) From \"Produto\" Where \"Codigo\" = ' " + prod.getCodigo() + " ' ");
+				st.executeQuery("Select count(*) From \"Produto\" Where \"Codigo\" = ' " + getCodigo() + " ' ");
 
 				ResultSet rs = st.getResultSet();
 
 				st.execute("Insert Into public.\"Produto\" (\"Codigo\", \"Descricao\", \"Preco\") Values('"
-						+ prod.getCodigo() + "','" + prod.getDescricao() + "','" + prod.getPreco() + "')");
+						+ getCodigo() + "','" + getDescricao() + "','" + getPreco() + "')");
 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -48,14 +56,15 @@ public class ControllerProduto {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
 				Produto p = new Produto();
+				p.setIdItem(resultSet.getInt("ID"));
 				p.setCodigo(resultSet.getString("Codigo"));
 				p.setDescricao(resultSet.getString("Descricao"));
-				p.setPreco(Double.parseDouble(resultSet.getString("Preco")));
+				p.setPreco(resultSet.getDouble("Preco"));
 				produto.add(p);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+
 		}
 
 		return produto;

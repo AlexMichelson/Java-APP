@@ -9,10 +9,10 @@ import java.util.List;
 
 import br.com.model.Documento;
 
-public class ControllerDocumento {
+public class ControllerDocumento extends Documento {
 
 	private DB db = new DB();
-	private Statement st;
+	PreparedStatement pStDocto;
 
 	public String SelectProcimoNumDocto() {
 
@@ -33,27 +33,32 @@ public class ControllerDocumento {
 		return null;
 	}
 
-	public void addDocto(Documento docto) {
+	public Boolean addDocto() {
 		try {
-			st = db.getCon().createStatement();
-			st.execute("Insert Into public.\"Documento\" (\"Total\", \"Confirmado\") Values('" + docto.getTotal()
-					+ "','" + docto.getConfirmado() + "')");
+			String sQuery = "Insert Into public.\"Documento\" (\"Numero\", \"Total\", \"Confirmar\") Values('"
+					+ getNumero() + "','" + getTotal() + "','" + Boolean.toString(getConfirmado()) + "')";
+
+			pStDocto = db.getCon().prepareStatement(sQuery);
+			pStDocto.execute();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
+
 	}
 
-	public List<Documento> SelectDocumento() {
+	public List<Documento> selectDocto(String status) {
 
 		List<Documento> docto = new ArrayList<>();
 		try {
-			String sql = "Select * From \"Documento\" Where \"Confirmado\" = 't'";
+			String sql = " SELECT *  FROM \"Documento\" Where \"Confirmar\" = '" + status + "' ";
 			PreparedStatement preparedStatement = db.getCon().prepareStatement(sql);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
 				Documento doc = new Documento();
-				doc.setNumero(resultSet.getString("Numero"));
+				doc.setNumero(resultSet.getInt("Numero"));
 				doc.setTotal(Double.parseDouble(resultSet.getString("Total")));
 				docto.add(doc);
 			}
@@ -63,6 +68,36 @@ public class ControllerDocumento {
 		}
 
 		return docto;
+	}
+
+	public void updateDocto() {
+		String sQuery = "UPDATE public.\"Documento\"\r\n" + "   SET \"Confirmar\"= ? \r\n" + "     , \"Total\"= ? \r\n"
+				+ " WHERE \"Numero\" = ?";
+
+		try {
+			PreparedStatement pStDocto = db.getCon().prepareStatement(sQuery);
+			pStDocto.setBoolean(1, getConfirmado());
+			pStDocto.setDouble(2, getTotal());
+			pStDocto.setInt(3, getNumero());
+			pStDocto.execute();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void updateStatusDocto() {
+		String sQuery = "UPDATE public.\"Documento\"\r\n" + "   SET \"Confirmar\"= ? " + " WHERE \"Numero\" = ?";
+
+		try {
+			PreparedStatement pStDocto = db.getCon().prepareStatement(sQuery);
+			pStDocto.setBoolean(1, getConfirmado());
+			pStDocto.setInt(2, getNumero());
+			pStDocto.execute();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
